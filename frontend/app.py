@@ -18,7 +18,7 @@ if uploaded_file is not None:
     st.image(uploaded_file, width=300)
 
     if st.button("Run Pipeline"):
-    files = {"file": (uploaded_file.name, uploaded_file.getvalue(), uploaded_file.type)}
+      files = {"file": (uploaded_file.name, uploaded_file.getvalue(), uploaded_file.type)}
     with st.spinner("Processing through pipeline stages..."):
         try:
             response = requests.post(f"{API_URL}/pipeline", files=files, timeout=5)
