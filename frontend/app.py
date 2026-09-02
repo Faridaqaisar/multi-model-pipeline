@@ -18,10 +18,14 @@ if uploaded_file is not None:
     st.image(uploaded_file, width=300)
 
     if st.button("Run Pipeline"):
-        files = {"file": (uploaded_file.name, uploaded_file.getvalue(), uploaded_file.type)}
-        with st.spinner("Processing through pipeline stages..."):
-            response = requests.post(f"{API_URL}/pipeline", files=files)
-        result = response.json()
+    files = {"file": (uploaded_file.name, uploaded_file.getvalue(), uploaded_file.type)}
+    with st.spinner("Processing through pipeline stages..."):
+        try:
+            response = requests.post(f"{API_URL}/pipeline", files=files, timeout=5)
+            result = response.json()
+        except requests.exceptions.ConnectionError:
+            st.error("⚠️ Backend is not running. This demo requires the FastAPI backend to be running locally alongside this app. See the GitHub README for setup instructions.")
+            st.stop()
 
         if "error" in result:
             st.error(f"Stage failed: {result['error']}")
